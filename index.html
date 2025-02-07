@@ -22,25 +22,26 @@
             color: white;
             overflow: hidden;
             position: relative;
+            padding: 10px;
         }
 
         .card {
             background: #222;
-            padding: 40px;
+            padding: 30px;
             text-align: center;
             border-radius: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            max-width: 400px;
-            width: 100%;
+            max-width: 90%;
+            width: 400px;
         }
 
         h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
         }
 
         .heart {
-            font-size: 50px;
+            font-size: 40px;
             color: red;
             animation: beat 1s infinite;
         }
@@ -58,20 +59,21 @@
             margin-top: 20px;
             display: flex;
             justify-content: center;
-            gap: 20px;
+            flex-direction: column; /* Przyciski pod sobą na telefonach */
+            gap: 15px;
             position: relative;
         }
 
         button {
             background-color: #ff6b81;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s;
-            font-size: 16px;
-            position: relative;
+            font-size: 18px;
+            width: 100%;
         }
 
         button:hover {
@@ -79,43 +81,55 @@
         }
 
         #noBtn {
-            position: relative;
+            position: absolute;
+            transition: left 0.2s, top 0.2s;
         }
 
         .response {
-                       margin-top: 20px;
+            margin-top: 20px;
             font-size: 1.2rem;
             display: none;
         }
 
         /* Pole na imię */
         input {
-            padding: 10px;
+            padding: 12px;
             border-radius: 10px;
             border: none;
-            font-size: 16px;
+            font-size: 18px;
             text-align: center;
             display: block;
             margin: 10px auto;
-            width: 80%;
+            width: 100%;
         }
 
         /* Szopy */
         .raccoon {
             position: fixed;
-            width: 280px;
+            width: 180px;
             opacity: 0.9;
         }
 
         .raccoon.left {
-            bottom: 10px;
-            left: 10px;
+            bottom: 5px;
+            left: 5px;
         }
 
         .raccoon.right {
-            bottom: 10px;
-            right: 10px;
+            bottom: 5px;
+            right: 5px;
         }
+
+        /* Responsywność */
+        @media (min-width: 600px) {
+            .button-container {
+                flex-direction: row;
+            }
+            button {
+                width: auto;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -131,8 +145,8 @@
     </div>
 
     <!-- Obrazki walentynkowych szopów -->
-    <img src="lewo.png" class="raccoon left">
-    <img src="prawo.png" class="raccoon right">
+    <img src="./assets/lewo.png" class="raccoon left">
+    <img src="./assets/prawo.png" class="raccoon right">
 
     <script>
         const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1337408597612826694/6PuKfBgcsfONfb1PESUQFlMa-1taDOFZSFEs1Fvl4WAJijCXFhTVpiibV9GTm4vilh-v";
@@ -150,30 +164,18 @@
             document.getElementById("response").style.display = "block";
             document.getElementById("response").textContent = `To najpiękniejszy dzień w moim życiu, ${username}! ❤️`;
 
-            // Konfetti efekt 🎉
             confetti({
                 particleCount: 100,
                 spread: 70,
                 origin: { y: 0.6 }
             });
 
-            // Wysyłanie wiadomości na Discorda
             fetch(DISCORD_WEBHOOK_URL, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    content: `💖 ${username} kliknęła "Tak!" i zgodziła się zostać twoją walentynką! 💖
-                    
-                    `
+                    content: `💖 ${username} kliknęła "Tak!" i zgodziła się zostać twoją walentynką! 💖`
                 })
-            }).then(response => {
-                if (response.ok) {
-                    console.log("Wiadomość wysłana na Discorda.");
-                } else {
-                    console.error("Błąd podczas wysyłania wiadomości.");
-                }
             });
         });
 
@@ -186,11 +188,10 @@
 
                 let newX, newY;
                 do {
-                    newX = Math.random() * (containerRect.width - btnRect.width) - (containerRect.width / 2);
-                    newY = Math.random() * (containerRect.height - btnRect.height) - (containerRect.height / 3);
+                    newX = Math.random() * (containerRect.width - btnRect.width);
+                    newY = Math.random() * (containerRect.height - btnRect.height);
                 } while (Math.abs(newX) < 50 && Math.abs(newY) < 50);
 
-                noBtn.style.position = "absolute";
                 noBtn.style.left = `${newX}px`;
                 noBtn.style.top = `${newY}px`;
 
@@ -209,27 +210,15 @@
                 document.getElementById("response").style.display = "block";
                 document.getElementById("response").textContent = `💔 ${username}, złamałaś mi serce...`;
 
-                // Wysyłanie wiadomości na Discorda
                 fetch(DISCORD_WEBHOOK_URL, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        content: `💔 ${username} kliknęła "Nie" i odmówiła zostania twoją walentynką. 😢
-                        
-                        `
+                        content: `💔 ${username} kliknęła "Nie" i odmówiła zostania twoją walentynką. 😢`
                     })
-                }).then(response => {
-                    if (response.ok) {
-                        console.log("Wiadomość o odmowie wysłana na Discorda.");
-                    } else {
-                        console.error("Błąd podczas wysyłania wiadomości.");
-                    }
                 });
             }
         });
     </script>
 </body>
 </html>
-
