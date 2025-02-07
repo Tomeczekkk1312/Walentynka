@@ -131,6 +131,7 @@
       width: 180px;
       opacity: 0.9;
       z-index: 3;
+      pointer-events: none; /* Nie blokują kliknięć */
     }
     .raccoon.left {
       bottom: 5px;
@@ -141,11 +142,9 @@
       right: 5px;
     }
     @media (max-width: 600px) {
-  .card {
-    transform: translateY(-50px); /* Podnosi kontener o 30px */
-  }
-}
-
+      .card {
+        transform: translateY(-50px); /* Podnosi kontener o 30px na telefonach */
+      }
     }
   </style>
 </head>
@@ -169,12 +168,10 @@
   <img src="prawo.png" class="raccoon right">
 
   <script>
-    // Animowane tło z serduszkami
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
-      heart.innerHTML = "&#10084;"; // symbol serca
-      // Ustawiamy serduszko u dołu widoku
+      heart.innerHTML = "&#10084;";
       heart.style.top = "100vh";
       heart.style.left = Math.random() * 100 + "vw";
       heart.style.fontSize = (20 + Math.random() * 30) + "px";
@@ -184,7 +181,6 @@
     }
     setInterval(createHeart, 300);
 
-    // Obsługa guzika
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1337408597612826694/6PuKfBgcsfONfb1PESUQFlMa-1taDOFZSFEs1Fvl4WAJijCXFhTVpiibV9GTm4vilh-v";
     let noHoverCount = 0;
     const maxNoHovers = 30;
@@ -197,7 +193,6 @@
       if (noHoverCount < maxNoHovers) {
         let newX, newY;
         if (window.innerWidth <= 600) {
-          // Na telefonie – ograniczamy ruch do widocznego obszaru viewportu
           const maxX = window.innerWidth - noBtn.clientWidth - 20;
           const maxY = window.innerHeight - noBtn.clientHeight - 20;
           newX = Math.random() * maxX;
@@ -206,7 +201,6 @@
           noBtn.style.left = `${newX}px`;
           noBtn.style.top = `${newY}px`;
         } else {
-          // Na komputerze – ruch wewnątrz obszaru karty
           const container = document.querySelector(".card").getBoundingClientRect();
           const maxX = container.width - noBtn.clientWidth - 20;
           const maxY = container.height - noBtn.clientHeight - 20;
@@ -222,48 +216,6 @@
 
     noBtn.addEventListener("mouseover", moveNoButton);
     noBtn.addEventListener("click", moveNoButton);
-
-    yesBtn.addEventListener("click", function() {
-      if (sessionCompleted) return;
-      sessionCompleted = true;
-      const username = document.getElementById("username").value.trim();
-      if (!username) {
-        alert("Proszę podać swoje imię!");
-        sessionCompleted = false;
-        return;
-      }
-      document.getElementById("response").style.display = "block";
-      document.getElementById("response").textContent = `To najpiękniejszy dzień w moim życiu, ${username}! ❤️`;
-      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-      fetch(DISCORD_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          content: `💖 ${username} kliknęła "Tak!" i zgodziła się zostać twoją walentynką! 💖`
-        })
-      });
-    });
-
-    noBtn.addEventListener("click", function() {
-      if (noHoverCount >= maxNoHovers && !sessionCompleted) {
-        sessionCompleted = true;
-        const username = document.getElementById("username").value.trim();
-        if (!username) {
-          alert("Proszę podać swoje imię!");
-          sessionCompleted = false;
-          return;
-        }
-        document.getElementById("response").style.display = "block";
-        document.getElementById("response").textContent = `💔 ${username}, złamałaś mi serce...`;
-        fetch(DISCORD_WEBHOOK_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            content: `💔 ${username} kliknęła "Nie" i odmówiła zostania twoją walentynką. 😢`
-          })
-        });
-      }
-    });
   </script>
 </body>
 </html>
