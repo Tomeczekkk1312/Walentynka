@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Zostaniesz moją walentynką?</title>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1"></script> 
   <style>
     * {
       margin: 0;
@@ -23,13 +23,14 @@
       position: relative;
       padding: 10px;
     }
+    /* Animowane tło z serduszkami */
     .heart-background {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 0;
+      z-index: 0; /* Tło */
       pointer-events: none;
       overflow: hidden;
     }
@@ -40,15 +41,22 @@
       animation: float 5s linear infinite;
     }
     @keyframes float {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateY(-100vh) scale(0.5); opacity: 0; }
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) scale(0.5);
+        opacity: 0;
+      }
     }
+
     .card {
       background: #222;
       padding: 30px;
       text-align: center;
       border-radius: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
       max-width: 90%;
       width: 400px;
       position: relative;
@@ -108,9 +116,9 @@
     button:hover {
       background-color: #ff4757;
     }
+    /* Guzik "Nie" – ruch ustawiany przez JS */
     #noBtn {
       transition: transform 0.2s ease;
-      position: absolute;
     }
     .response {
       margin-top: 20px;
@@ -118,21 +126,30 @@
       display: none;
       z-index: 2;
     }
+    /* Szopy w rogach */
     .raccoon {
       position: fixed;
       width: 180px;
       opacity: 0.9;
-      z-index: 3;
-      pointer-events: none;
+      z-index: 1;
     }
-    .raccoon.left { bottom: 5px; left: 5px; }
-    .raccoon.right { bottom: 5px; right: 5px; }
+    .raccoon.left {
+      bottom: 5px;
+      left: 5px;
+    }
+    .raccoon.right {
+      bottom: 5px;
+      right: 5px;
+    }
     @media (max-width: 600px) {
-      .card { transform: translateY(-50px); }
+      .button-container {
+        flex-direction: row;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Animowane tło z serduszkami -->
   <div class="heart-background" id="heartBackground"></div>
 
   <div class="card">
@@ -146,70 +163,110 @@
     <p id="response" class="response"></p>
   </div>
 
+  <!-- Szopy w rogach -->
   <img src="lewo.png" class="raccoon left">
   <img src="prawo.png" class="raccoon right">
 
   <script>
+    // Animowane tło z serduszkami
     function createHeart() {
-      const heart = document.createElement("div");
-      heart.classList.add("heart");
-      heart.innerHTML = "&#10084;";
-      heart.style.top = "100vh";
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.fontSize = (20 + Math.random() * 30) + "px";
-      heart.style.animationDuration = (3 + Math.random() * 3) + "s";
-      document.getElementById("heartBackground").appendChild(heart);
-      setTimeout(() => { heart.remove(); }, 6000);
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerHTML = '&#10084;'; // symbol serca
+      // losowa pozycja pozioma
+      heart.style.left = Math.random() * 100 + 'vw';
+      // losowa wielkość
+      heart.style.fontSize = (20 + Math.random() * 30) + 'px';
+      // losowy czas animacji
+      heart.style.animationDuration = (3 + Math.random() * 3) + 's';
+      document.getElementById('heartBackground').appendChild(heart);
+      // usuń serduszko po animacji
+      setTimeout(() => {
+        heart.remove();
+      }, 6000);
     }
     setInterval(createHeart, 300);
 
+    // Obsługa guzika
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1337408597612826694/6PuKfBgcsfONfb1PESUQFlMa-1taDOFZSFEs1Fvl4WAJijCXFhTVpiibV9GTm4vilh-v";
     let noHoverCount = 0;
     const maxNoHovers = 30;
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
-    const nameInput = document.getElementById("username");
     let sessionCompleted = false;
 
     function moveNoButton() {
-      if (sessionCompleted || noHoverCount >= maxNoHovers) return;
-
-      const btnWidth = noBtn.offsetWidth;
-      const btnHeight = noBtn.offsetHeight;
-      const maxX = window.innerWidth - btnWidth - 20;
-      const maxY = window.innerHeight - btnHeight - 20;
-
-      let newX = Math.random() * maxX;
-      let newY = Math.random() * maxY;
-
-      noBtn.style.position = "fixed";
-      noBtn.style.left = `${newX}px`;
-      noBtn.style.top = `${newY}px`;
-
-      noHoverCount++;
-    }
-
-    function acceptProposal() {
-      const name = nameInput.value.trim() || "Kochanie";
-      const message = {
-        content: `${name} zgodziła się zostać walentynką! ❤️`
-      };
-
-      fetch(DISCORD_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(message)
-      });
-
-      document.getElementById("response").textContent = `${name}, wiedziałem, że się zgodzisz! 💖`;
-      document.getElementById("response").style.display = "block";
-      confetti();
-      sessionCompleted = true;
+      if (sessionCompleted) return;
+      if (noHoverCount < maxNoHovers) {
+        let newX, newY;
+        if (window.innerWidth <= 600) {
+          // Na telefonie – ograniczamy ruch do widocznego obszaru viewportu
+          const maxX = window.innerWidth - noBtn.clientWidth - 20;
+          const maxY = window.innerHeight - noBtn.clientHeight - 20;
+          newX = Math.random() * maxX;
+          newY = Math.random() * maxY;
+          noBtn.style.position = "fixed";
+          noBtn.style.left = `${newX}px`;
+          noBtn.style.top = `${newY}px`;
+        } else {
+          // Na komputerze – ruch wewnątrz karty
+          const container = document.querySelector(".card").getBoundingClientRect();
+          const maxX = container.width - noBtn.clientWidth - 20;
+          const maxY = container.height - noBtn.clientHeight - 20;
+          newX = Math.random() * maxX;
+          newY = Math.random() * maxY;
+          noBtn.style.position = "absolute";
+          noBtn.style.left = `${newX}px`;
+          noBtn.style.top = `${newY}px`;
+        }
+        noHoverCount++;
+      }
     }
 
     noBtn.addEventListener("mouseover", moveNoButton);
-    noBtn.addEventListener("click", moveNoButton);
-    yesBtn.addEventListener("click", acceptProposal);
+    noBtn.addEventListener("click", function() {
+      if (!sessionCompleted && noHoverCount < maxNoHovers) {
+        moveNoButton();
+      } else if (!sessionCompleted && noHoverCount >= maxNoHovers) {
+        sessionCompleted = true;
+        const username = document.getElementById("username").value.trim();
+        if (!username) {
+          alert("Proszę podać swoje imię!");
+          sessionCompleted = false;
+          return;
+        }
+        document.getElementById("response").style.display = "block";
+        document.getElementById("response").textContent = `💔 ${username}, złamałaś mi serce...`;
+        fetch(DISCORD_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            content: `💔 ${username} kliknęła "Nie" i odmówiła zostania twoją walentynką. 😢`
+          })
+        });
+      }
+    });
+
+    yesBtn.addEventListener("click", function() {
+      if (sessionCompleted) return;
+      sessionCompleted = true;
+      const username = document.getElementById("username").value.trim();
+      if (!username) {
+        alert("Proszę podać swoje imię!");
+        sessionCompleted = false;
+        return;
+      }
+      document.getElementById("response").style.display = "block";
+      document.getElementById("response").textContent = `To najpiękniejszy dzień w moim życiu, ${username}! ❤️`;
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      fetch(DISCORD_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content: `💖 ${username} kliknęła "Tak!" i zgodziła się zostać twoją walentynką! 💖`
+        })
+      });
+    });
   </script>
 </body>
 </html>
