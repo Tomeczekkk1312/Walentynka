@@ -91,6 +91,7 @@
 
         #noBtn {
             transition: left 0.2s, top 0.2s;
+            position: absolute;
         }
 
         .response {
@@ -108,15 +109,6 @@
             display: block;
             margin: 10px auto;
             width: 100%;
-        }
-
-        @media (min-width: 600px) {
-            .button-container {
-                flex-direction: row;
-            }
-            button {
-                width: auto;
-            }
         }
     </style>
 </head>
@@ -140,24 +132,14 @@
         const yesBtn = document.getElementById("yesBtn");
 
         function moveNoButton() {
-            if (window.innerWidth <= 600) return; // Na telefonie guzik nie ucieka
-
             if (noHoverCount < maxNoHovers) {
                 const container = document.querySelector(".card");
                 const containerRect = container.getBoundingClientRect();
                 const btnRect = noBtn.getBoundingClientRect();
 
-                let newX, newY;
-                do {
-                    newX = Math.random() * (containerRect.width - btnRect.width - 20);
-                    newY = Math.random() * (containerRect.height - btnRect.height - 20);
-                } while (
-                    newX < 10 || newY < 10 ||
-                    newX + btnRect.width > containerRect.width - 10 ||
-                    newY + btnRect.height > containerRect.height - 10
-                );
+                let newX = Math.random() * (containerRect.width - btnRect.width - 20);
+                let newY = Math.random() * (containerRect.height - btnRect.height - 20);
 
-                noBtn.style.position = "absolute";
                 noBtn.style.left = `${newX}px`;
                 noBtn.style.top = `${newY}px`;
 
