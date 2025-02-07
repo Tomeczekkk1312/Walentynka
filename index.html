@@ -33,6 +33,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
             max-width: 90%;
             width: 400px;
+            position: relative;
         }
 
         h1 {
@@ -72,6 +73,7 @@
             justify-content: center;
             box-sizing: border-box;
             flex: none;
+            position: relative;
         }
 
         .button-container {
@@ -80,6 +82,7 @@
             gap: 15px;
             width: 100%;
             flex-wrap: wrap;
+            position: relative;
         }
 
         button:hover {
@@ -87,7 +90,6 @@
         }
 
         #noBtn {
-            position: absolute;
             transition: left 0.2s, top 0.2s;
         }
 
@@ -108,22 +110,6 @@
             width: 100%;
         }
 
-        .raccoon {
-            position: fixed;
-            width: 180px;
-            opacity: 0.9;
-        }
-
-        .raccoon.left {
-            bottom: 5px;
-            left: 5px;
-        }
-
-        .raccoon.right {
-            bottom: 5px;
-            right: 5px;
-        }
-
         @media (min-width: 600px) {
             .button-container {
                 flex-direction: row;
@@ -132,7 +118,6 @@
                 width: auto;
             }
         }
-
     </style>
 </head>
 <body>
@@ -146,9 +131,6 @@
         </div>
         <p id="response" class="response"></p>
     </div>
-
-    <img src="lewo.png" class="raccoon left">
-    <img src="prawo.png" class="raccoon right">
 
     <script>
         const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1337408597612826694/6PuKfBgcsfONfb1PESUQFlMa-1taDOFZSFEs1Fvl4WAJijCXFhTVpiibV9GTm4vilh-v";
@@ -232,12 +214,6 @@
                 });
             }
         });
-
-        window.onload = function() {
-            if (window.innerWidth > 600) {
-                noBtn.style.position = "absolute";
-            }
-        };
     </script>
 
 </body>
