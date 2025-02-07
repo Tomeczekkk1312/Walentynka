@@ -149,76 +149,80 @@
     <img src="prawo.png" class="raccoon right">
 
     <script>
-        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1337408597612826694/6PuKfBgcsfONfb1PESUQFlMa-1taDOFZSFEs1Fvl4WAJijCXFhTVpiibV9GTm4vilh-v";
-        let noHoverCount = 0;
-        const maxNoHovers = 30;
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1337408597612826694/6PuKfBgcsfONfb1PESUQFlMa-1taDOFZSFEs1Fvl4WAJijCXFhTVpiibV9GTm4vilh-v";
+    let noHoverCount = 0;
+    const maxNoHovers = 30;
+    const noBtn = document.getElementById("noBtn");
 
-        document.getElementById("yesBtn").addEventListener("click", function() {
+    function moveNoButton() {
+        if (noHoverCount < maxNoHovers) {
+            const container = document.querySelector(".card");
+            const containerRect = container.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+
+            let newX, newY;
+            do {
+                newX = Math.random() * (containerRect.width - btnRect.width);
+                newY = Math.random() * (containerRect.height - btnRect.height);
+            } while (Math.abs(newX) < 50 && Math.abs(newY) < 50);
+
+            noBtn.style.left = `${newX}px`;
+            noBtn.style.top = `${newY}px`;
+
+            noHoverCount++;
+        }
+    }
+
+    noBtn.addEventListener("mouseover", moveNoButton);
+    noBtn.addEventListener("touchstart", moveNoButton); // Dla telefonów
+
+    document.getElementById("yesBtn").addEventListener("click", function() {
+        const username = document.getElementById("username").value.trim();
+
+        if (!username) {
+            alert("Proszę podać swoje imię!");
+            return;
+        }
+
+        document.getElementById("response").style.display = "block";
+        document.getElementById("response").textContent = `To najpiękniejszy dzień w moim życiu, ${username}! ❤️`;
+
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+
+        fetch(DISCORD_WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                content: `💖 ${username} kliknęła "Tak!" i zgodziła się zostać twoją walentynką! 💖`
+            })
+        });
+    });
+
+    noBtn.addEventListener("click", function() {
+        if (noHoverCount >= maxNoHovers) {
             const username = document.getElementById("username").value.trim();
-
             if (!username) {
                 alert("Proszę podać swoje imię!");
                 return;
             }
 
             document.getElementById("response").style.display = "block";
-            document.getElementById("response").textContent = `To najpiękniejszy dzień w moim życiu, ${username}! ❤️`;
-
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
+            document.getElementById("response").textContent = `💔 ${username}, złamałaś mi serce...`;
 
             fetch(DISCORD_WEBHOOK_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    content: `💖 ${username} kliknęła "Tak!" i zgodziła się zostać twoją walentynką! 💖`
+                    content: `💔 ${username} kliknęła "Nie" i odmówiła zostania twoją walentynką. 😢`
                 })
             });
-        });
+        }
+    });
+</script>
 
-        document.getElementById("noBtn").addEventListener("mouseover", function() {
-            if (noHoverCount < maxNoHovers) {
-                const noBtn = document.getElementById("noBtn");
-                const container = document.querySelector(".card");
-                const containerRect = container.getBoundingClientRect();
-                const btnRect = noBtn.getBoundingClientRect();
-
-                let newX, newY;
-                do {
-                    newX = Math.random() * (containerRect.width - btnRect.width);
-                    newY = Math.random() * (containerRect.height - btnRect.height);
-                } while (Math.abs(newX) < 50 && Math.abs(newY) < 50);
-
-                noBtn.style.left = `${newX}px`;
-                noBtn.style.top = `${newY}px`;
-
-                noHoverCount++;
-            }
-        });
-
-        document.getElementById("noBtn").addEventListener("click", function() {
-            if (noHoverCount >= maxNoHovers) {
-                const username = document.getElementById("username").value.trim();
-                if (!username) {
-                    alert("Proszę podać swoje imię!");
-                    return;
-                }
-
-                document.getElementById("response").style.display = "block";
-                document.getElementById("response").textContent = `💔 ${username}, złamałaś mi serce...`;
-
-                fetch(DISCORD_WEBHOOK_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        content: `💔 ${username} kliknęła "Nie" i odmówiła zostania twoją walentynką. 😢`
-                    })
-                });
-            }
-        });
-    </script>
 </body>
 </html>
