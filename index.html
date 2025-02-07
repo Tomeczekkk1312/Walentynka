@@ -153,6 +153,16 @@
     let noHoverCount = 0;
     const maxNoHovers = 30;
     const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+
+    // Ustawienie początkowej pozycji "Nie" niżej od "Tak"
+    function setInitialNoButtonPosition() {
+        const yesRect = yesBtn.getBoundingClientRect();
+        noBtn.style.position = "absolute";
+        noBtn.style.left = "50%";
+        noBtn.style.transform = "translateX(-50%)";
+        noBtn.style.top = `${yesRect.bottom + 20}px`; // 20px odstępu od "Tak"
+    }
 
     function moveNoButton() {
         if (noHoverCount < maxNoHovers) {
@@ -164,17 +174,21 @@
             do {
                 newX = Math.random() * (containerRect.width - btnRect.width);
                 newY = Math.random() * (containerRect.height - btnRect.height);
-            } while (Math.abs(newX) < 50 && Math.abs(newY) < 50);
+            } while (
+                newX < 0 || newY < 0 || 
+                newX + btnRect.width > containerRect.width || 
+                newY + btnRect.height > containerRect.height
+            );
 
-            noBtn.style.left = `${newX}px`;
-            noBtn.style.top = `${newY}px`;
+            noBtn.style.transform = `translate(${newX}px, ${newY}px)`;
 
             noHoverCount++;
         }
     }
 
+    // Przycisk "Nie" ucieka na hover i dotyk
     noBtn.addEventListener("mouseover", moveNoButton);
-    noBtn.addEventListener("touchstart", moveNoButton); // Dla telefonów
+    noBtn.addEventListener("touchstart", moveNoButton);
 
     document.getElementById("yesBtn").addEventListener("click", function() {
         const username = document.getElementById("username").value.trim();
@@ -222,7 +236,11 @@
             });
         }
     });
+
+    // Ustaw początkową pozycję "Nie" po załadowaniu strony
+    window.onload = setInitialNoButtonPosition;
 </script>
+
 
 </body>
 </html>
