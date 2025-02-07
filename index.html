@@ -124,15 +124,15 @@
             right: 5px;
         }
 
-        @media (max-width: 600px) {
+        @media (min-width: 600px) {
             .button-container {
-                flex-direction: column;
-                align-items: center;
+                flex-direction: row;
             }
             button {
-                width: 100%;
+                width: auto;
             }
         }
+
     </style>
 </head>
 <body>
@@ -157,13 +157,9 @@
         const noBtn = document.getElementById("noBtn");
         const yesBtn = document.getElementById("yesBtn");
 
-        function setInitialNoButtonPosition() {
-            const yesRect = yesBtn.getBoundingClientRect();
-            noBtn.style.position = "relative";
-            noBtn.style.marginTop = "20px";
-        }
-
         function moveNoButton() {
+            if (window.innerWidth <= 600) return; // Na telefonie guzik nie ucieka
+
             if (noHoverCount < maxNoHovers) {
                 const container = document.querySelector(".card");
                 const containerRect = container.getBoundingClientRect();
@@ -190,7 +186,7 @@
         noBtn.addEventListener("mouseover", moveNoButton);
         noBtn.addEventListener("click", moveNoButton);
 
-        yesBtn.addEventListener("click", function() {
+        document.getElementById("yesBtn").addEventListener("click", function() {
             const username = document.getElementById("username").value.trim();
 
             if (!username) {
@@ -237,7 +233,12 @@
             }
         });
 
-        window.onload = setInitialNoButtonPosition;
+        window.onload = function() {
+            if (window.innerWidth > 600) {
+                noBtn.style.position = "absolute";
+            }
+        };
     </script>
+
 </body>
 </html>
