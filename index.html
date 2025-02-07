@@ -55,26 +55,27 @@
             }
         }
 
-        button {
-    background-color: #ff6b81;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    font-size: 18px;
-    flex: 1; /* Równa szerokość */
-    min-width: 100px; /* Zapobiega za małym przyciskom */
-    text-align: center;
-}
-
-.button-container {
+        .button-container {
     display: flex;
     justify-content: center;
     gap: 15px;
     width: 100%;
-}
+        }
+
+        button {
+            background-color: #ff6b81;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            font-size: 18px;
+            flex: 1; /* Ustala równe rozmiary */
+            min-width: 120px; /* Zapobiega za małym przyciskom */
+            max-width: 150px; /* Opcjonalnie, by nie były za duże */
+            text-align: center;
+        }
 
         button:hover {
             background-color: #ff4757;
