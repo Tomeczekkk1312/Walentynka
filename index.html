@@ -55,6 +55,25 @@
             }
         }
 
+        input {
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 18px;
+            text-align: center;
+            display: block;
+            margin: 10px auto;
+            width: 100%;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            margin-top: 15px;
+        }
+
         button {
             background-color: #ff6b81;
             color: white;
@@ -65,7 +84,7 @@
             transition: background-color 0.3s, transform 0.2s;
             font-size: 18px;
             text-align: center;
-            width: 150px;
+            width: 130px;
             height: 50px;
             display: flex;
             align-items: center;
@@ -78,16 +97,8 @@
             background-color: #ff4757;
         }
 
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            width: 100%;
-            flex-wrap: nowrap; /* Guziki zawsze obok siebie */
-        }
-
         #noBtn {
-            position: absolute;
+            position: relative;
             transition: left 0.2s, top 0.2s;
         }
 
@@ -96,18 +107,6 @@
             font-size: 1.2rem;
             display: none;
         }
-
-        input {
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            font-size: 18px;
-            text-align: center;
-            display: block;
-            margin: 10px auto;
-            width: 100%;
-        }
-
     </style>
 </head>
 <body>
