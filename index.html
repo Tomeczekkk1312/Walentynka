@@ -100,16 +100,17 @@
 
     /* Guzik "Nie" – domyślnie pozycjonowany; ruch będzie ustalany przez JS */
     #noBtn {
-      transition: transform 0.2s ease;
+      transition: all 0.2s ease;
     }
 
     .response {
       margin-top: 20px;
       font-size: 1.2rem;
       display: none;
+      z-index: 2;
     }
 
-    /* SZOPY w rogach */
+    /* Szopy w rogach */
     .raccoon {
       position: fixed;
       width: 180px;
@@ -138,7 +139,7 @@
     <p id="response" class="response"></p>
   </div>
 
-  <!-- Szopy w lewym i prawym dolnym rogu -->
+  <!-- Szopy w rogach -->
   <img src="lewo.png" class="raccoon left">
   <img src="prawo.png" class="raccoon right">
 
@@ -153,23 +154,26 @@
       if (noHoverCount < maxNoHovers) {
         let newX, newY;
         if (window.innerWidth <= 600) {
-          // Na telefonie – ograniczamy ruch do widocznego obszaru (viewport)
+          // Na telefonie: ograniczamy ruch do widocznego obszaru viewportu
           const maxX = window.innerWidth - noBtn.clientWidth - 20;
           const maxY = window.innerHeight - noBtn.clientHeight - 20;
           newX = Math.random() * maxX;
           newY = Math.random() * maxY;
-          noBtn.style.position = "fixed"; // fixed względem widoku
+          noBtn.style.position = "fixed";  // fixed względem widoku
+          noBtn.style.left = `${newX}px`;
+          noBtn.style.top = `${newY}px`;
         } else {
-          // Na komputerze – ograniczamy ruch do obszaru karty
+          // Na komputerze: ograniczamy ruch do obszaru karty
           const container = document.querySelector(".card");
           const containerRect = container.getBoundingClientRect();
           const maxX = containerRect.width - noBtn.clientWidth - 20;
           const maxY = containerRect.height - noBtn.clientHeight - 20;
           newX = Math.random() * maxX;
           newY = Math.random() * maxY;
-          noBtn.style.position = "absolute"; // absolute względem karty
+          noBtn.style.position = "absolute";  // względem karty
+          noBtn.style.left = `${newX}px`;
+          noBtn.style.top = `${newY}px`;
         }
-        noBtn.style.transform = `translate(${newX}px, ${newY}px)`;
         noHoverCount++;
       }
     }
