@@ -71,6 +71,7 @@
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
+            flex: none;
         }
 
         .button-container {
@@ -106,6 +107,32 @@
             margin: 10px auto;
             width: 100%;
         }
+
+        .raccoon {
+            position: fixed;
+            width: 180px;
+            opacity: 0.9;
+        }
+
+        .raccoon.left {
+            bottom: 5px;
+            left: 5px;
+        }
+
+        .raccoon.right {
+            bottom: 5px;
+            right: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            button {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -119,5 +146,98 @@
         </div>
         <p id="response" class="response"></p>
     </div>
+
+    <img src="lewo.png" class="raccoon left">
+    <img src="prawo.png" class="raccoon right">
+
+    <script>
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1337408597612826694/6PuKfBgcsfONfb1PESUQFlMa-1taDOFZSFEs1Fvl4WAJijCXFhTVpiibV9GTm4vilh-v";
+        let noHoverCount = 0;
+        const maxNoHovers = 30;
+        const noBtn = document.getElementById("noBtn");
+        const yesBtn = document.getElementById("yesBtn");
+
+        function setInitialNoButtonPosition() {
+            const yesRect = yesBtn.getBoundingClientRect();
+            noBtn.style.position = "relative";
+            noBtn.style.marginTop = "20px";
+        }
+
+        function moveNoButton() {
+            if (noHoverCount < maxNoHovers) {
+                const container = document.querySelector(".card");
+                const containerRect = container.getBoundingClientRect();
+                const btnRect = noBtn.getBoundingClientRect();
+
+                let newX, newY;
+                do {
+                    newX = Math.random() * (containerRect.width - btnRect.width - 20);
+                    newY = Math.random() * (containerRect.height - btnRect.height - 20);
+                } while (
+                    newX < 10 || newY < 10 ||
+                    newX + btnRect.width > containerRect.width - 10 ||
+                    newY + btnRect.height > containerRect.height - 10
+                );
+
+                noBtn.style.position = "absolute";
+                noBtn.style.left = `${newX}px`;
+                noBtn.style.top = `${newY}px`;
+
+                noHoverCount++;
+            }
+        }
+
+        noBtn.addEventListener("mouseover", moveNoButton);
+        noBtn.addEventListener("click", moveNoButton);
+
+        yesBtn.addEventListener("click", function() {
+            const username = document.getElementById("username").value.trim();
+
+            if (!username) {
+                alert("Proszę podać swoje imię!");
+                return;
+            }
+
+            document.getElementById("response").style.display = "block";
+            document.getElementById("response").textContent = `To najpiękniejszy dzień w moim życiu, ${username}! ❤️`;
+
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+
+            fetch(DISCORD_WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    content: `💖 ${username} kliknęła "Tak!" i zgodziła się zostać twoją walentynką! 💖`
+                })
+            });
+        });
+
+        noBtn.addEventListener("click", function() {
+            if (noHoverCount >= maxNoHovers) {
+                const username = document.getElementById("username").value.trim();
+                if (!username) {
+                    alert("Proszę podać swoje imię!");
+                    return;
+                }
+
+                document.getElementById("response").style.display = "block";
+                document.getElementById("response").textContent = `💔 ${username}, złamałaś mi serce...`;
+
+                fetch(DISCORD_WEBHOOK_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        content: `💔 ${username} kliknęła "Nie" i odmówiła zostania twoją walentynką. 😢`
+                    })
+                });
+            }
+        });
+
+        window.onload = setInitialNoButtonPosition;
+    </script>
 </body>
 </html>
