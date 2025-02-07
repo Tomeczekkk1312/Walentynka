@@ -55,26 +55,26 @@
             }
         }
 
-        .button-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            flex-direction: column; /* Przyciski pod sobą na telefonach */
-            gap: 15px;
-            position: relative;
-        }
-
         button {
-            background-color: #ff6b81;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-            font-size: 18px;
-            width: 100%;
-        }
+    background-color: #ff6b81;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    font-size: 18px;
+    flex: 1; /* Równa szerokość */
+    min-width: 100px; /* Zapobiega za małym przyciskom */
+    text-align: center;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+}
 
         button:hover {
             background-color: #ff4757;
@@ -169,12 +169,12 @@ function moveNoButton() {
 
         let newX, newY;
         do {
-            newX = Math.random() * (containerRect.width - btnRect.width);
-            newY = Math.random() * (containerRect.height - btnRect.height);
+            newX = Math.random() * (containerRect.width - btnRect.width - 20); // -20 dla marginesu
+            newY = Math.random() * (containerRect.height - btnRect.height - 20);
         } while (
-            newX < 0 || newY < 0 ||
-            newX + btnRect.width > containerRect.width ||
-            newY + btnRect.height > containerRect.height
+            newX < 10 || newY < 10 || // Zapewnia, że nie wchodzi na krawędź
+            newX + btnRect.width > containerRect.width - 10 ||
+            newY + btnRect.height > containerRect.height - 10
         );
 
         noBtn.style.position = "absolute";
