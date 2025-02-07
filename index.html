@@ -11,7 +11,6 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Arial', sans-serif;
       display: flex;
@@ -24,35 +23,58 @@
       position: relative;
       padding: 10px;
     }
+    /* Animowane tło z serduszkami */
+    .heart-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0; /* Tło */
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .heart {
+      position: absolute;
+      color: rgba(255, 0, 0, 0.5);
+      font-size: 24px;
+      animation: float 5s linear infinite;
+    }
+    @keyframes float {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) scale(0.5);
+        opacity: 0;
+      }
+    }
 
     .card {
       background: #222;
       padding: 30px;
       text-align: center;
       border-radius: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
       max-width: 90%;
       width: 400px;
       position: relative;
       z-index: 2;
     }
-
     h1 {
       font-size: 1.8rem;
       margin-bottom: 15px;
     }
-
-    .heart {
+    .heart-icon {
       font-size: 40px;
       color: red;
       animation: beat 1s infinite;
     }
-
     @keyframes beat {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.2); }
     }
-
     input {
       padding: 12px;
       border-radius: 10px;
@@ -63,7 +85,6 @@
       margin: 10px auto;
       width: 100%;
     }
-
     .button-container {
       display: flex;
       justify-content: center;
@@ -73,7 +94,6 @@
       position: relative;
       z-index: 2;
     }
-
     button {
       background-color: #ff6b81;
       color: white;
@@ -93,23 +113,19 @@
       flex: none;
       position: relative;
     }
-
     button:hover {
       background-color: #ff4757;
     }
-
     /* Guzik "Nie" – ruch ustawiany przez JS */
     #noBtn {
       transition: transform 0.2s ease;
     }
-
     .response {
       margin-top: 20px;
       font-size: 1.2rem;
       display: none;
       z-index: 2;
     }
-
     /* Szopy w rogach */
     .raccoon {
       position: fixed;
@@ -125,12 +141,20 @@
       bottom: 5px;
       right: 5px;
     }
+    @media (max-width: 600px) {
+      .button-container {
+        flex-direction: row;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- Animowane tło z serduszkami -->
+  <div class="heart-background" id="heartBackground"></div>
+
   <div class="card">
     <h1>Zostaniesz moją walentynką? ❤️</h1>
-    <div class="heart">&#10084;</div>
+    <div class="heart-icon">&#10084;</div>
     <input type="text" id="username" placeholder="Twoje imię" required>
     <div class="button-container">
       <button id="yesBtn">Tak!</button>
@@ -139,22 +163,40 @@
     <p id="response" class="response"></p>
   </div>
 
-  <!-- Szopy w lewym i prawym dolnym rogu -->
+  <!-- Szopy w rogach -->
   <img src="lewo.png" class="raccoon left">
   <img src="prawo.png" class="raccoon right">
 
   <script>
+    // Animowane tło z serduszkami
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerHTML = '&#10084;'; // symbol serca
+      // losowa pozycja pozioma
+      heart.style.left = Math.random() * 100 + 'vw';
+      // losowa wielkość
+      heart.style.fontSize = (20 + Math.random() * 30) + 'px';
+      // losowy czas animacji
+      heart.style.animationDuration = (3 + Math.random() * 3) + 's';
+      document.getElementById('heartBackground').appendChild(heart);
+      // usuń serduszko po animacji
+      setTimeout(() => {
+        heart.remove();
+      }, 6000);
+    }
+    setInterval(createHeart, 300);
+
+    // Obsługa guzika
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1337408597612826694/6PuKfBgcsfONfb1PESUQFlMa-1taDOFZSFEs1Fvl4WAJijCXFhTVpiibV9GTm4vilh-v";
     let noHoverCount = 0;
     const maxNoHovers = 30;
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
-    
-    // Flaga, która blokuje kolejne akcje w tej sesji
     let sessionCompleted = false;
 
     function moveNoButton() {
-      if (sessionCompleted) return; // Jeśli już kliknięto, nie ruszaj guzika
+      if (sessionCompleted) return;
       if (noHoverCount < maxNoHovers) {
         let newX, newY;
         if (window.innerWidth <= 600) {
@@ -167,7 +209,7 @@
           noBtn.style.left = `${newX}px`;
           noBtn.style.top = `${newY}px`;
         } else {
-          // Na komputerze – ruch w obrębie karty
+          // Na komputerze – ruch wewnątrz karty
           const container = document.querySelector(".card").getBoundingClientRect();
           const maxX = container.width - noBtn.clientWidth - 20;
           const maxY = container.height - noBtn.clientHeight - 20;
@@ -183,12 +225,9 @@
 
     noBtn.addEventListener("mouseover", moveNoButton);
     noBtn.addEventListener("click", function() {
-      if (!sessionCompleted) {
-        // Jeżeli jeszcze nie kliknięto żadnego guzika, najpierw spróbuj ruszyć
+      if (!sessionCompleted && noHoverCount < maxNoHovers) {
         moveNoButton();
-      }
-      // Jeśli już osiągnięto limit, przycisk "Nie" powinien działać
-      if (noHoverCount >= maxNoHovers && !sessionCompleted) {
+      } else if (!sessionCompleted && noHoverCount >= maxNoHovers) {
         sessionCompleted = true;
         const username = document.getElementById("username").value.trim();
         if (!username) {
