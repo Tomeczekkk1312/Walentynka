@@ -55,33 +55,32 @@
             }
         }
 
-        .button-container {
+        button {
+    background-color: #ff6b81;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    font-size: 18px;
+    text-align: center;
+    width: 150px; /* Stała szerokość */
+    height: 50px; /* Stała wysokość */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    flex: none; /* Zmień flex: 1 na flex: none, żeby szerokość nie była dynamiczna */
+}
+
+.button-container {
     display: flex;
     justify-content: center;
     gap: 15px;
     width: 100%;
-        }
-
-        button {
-            background-color: #ff6b81;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-            font-size: 18px;
-            flex: 1; /* Ustala równe rozmiary */
-            min-width: 120px; /* Zapobiega za małym przyciskom */
-            max-width: 150px; /* Opcjonalnie, by nie były za duże */
-            text-align: center;
-            width: 150px; /* Taka sama szerokość dla obu */
-            height: 50px; /* Taka sama wysokość */
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    flex-wrap: wrap; /* Dla responsywności */
+}
 
         button:hover {
             background-color: #ff4757;
