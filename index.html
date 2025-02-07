@@ -41,15 +41,16 @@
       animation: float 5s linear infinite;
     }
     @keyframes float {
-      0% {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-100vh) scale(0.5);
-        opacity: 0;
-      }
-    }
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) scale(1);
+    opacity: 0;
+  }
+}
+
 
     .card {
       background: #222;
@@ -170,20 +171,17 @@
   <script>
     // Animowane tło z serduszkami
     function createHeart() {
-      const heart = document.createElement('div');
-      heart.classList.add('heart');
-      heart.innerHTML = '&#10084;'; // symbol serca
-      // losowa pozycja pozioma
-      heart.style.left = Math.random() * 100 + 'vw';
-      // losowa wielkość
-      heart.style.fontSize = (20 + Math.random() * 30) + 'px';
-      // losowy czas animacji
-      heart.style.animationDuration = (3 + Math.random() * 3) + 's';
-      document.getElementById('heartBackground').appendChild(heart);
-      // usuń serduszko po animacji
-      setTimeout(() => {
-        heart.remove();
-      }, 6000);
+  const heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.innerHTML = "&#10084;";
+  heart.style.left = Math.random() * 100 + "vw"; // Losowa pozycja w poziomie
+  heart.style.bottom = "0"; // Start od dołu strony
+  heart.style.fontSize = (20 + Math.random() * 30) + "px";
+  heart.style.animationDuration = (3 + Math.random() * 3) + "s";
+  document.getElementById("heartBackground").appendChild(heart);
+  setTimeout(() => { heart.remove(); }, 6000);
+}
+
     }
     setInterval(createHeart, 300);
 
