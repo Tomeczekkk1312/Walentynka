@@ -38,7 +38,7 @@
       position: absolute;
       color: rgba(255, 0, 0, 0.5);
       font-size: 24px;
-      animation: float 5s linear infinite;
+      animation: float 10s linear infinite;
     }
     @keyframes float {
       0% {
@@ -176,7 +176,7 @@
       const heart = document.createElement("div");
       heart.classList.add("heart");
       heart.innerHTML = "&#10084;";
-      // Serduszka startują od dołu
+      // Ustawienie serduszka od dołu
       heart.style.bottom = "0";
       heart.style.left = Math.random() * 100 + "vw";
       heart.style.fontSize = (20 + Math.random() * 30) + "px";
@@ -186,7 +186,7 @@
     }
     setInterval(createHeart, 300);
 
-    // Obsługa guzika
+    // Obsługa guzika "Nie"
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1337408597612826694/6PuKfBgcsfONfb1PESUQFlMa-1taDOFZSFEs1Fvl4WAJijCXFhTVpiibV9GTm4vilh-v";
     let noHoverCount = 0;
     const maxNoHovers = 30;
@@ -197,19 +197,18 @@
 
     function moveNoButton() {
       if (sessionCompleted || noHoverCount >= maxNoHovers) return;
-
       const btnWidth = noBtn.offsetWidth;
       const btnHeight = noBtn.offsetHeight;
-      const maxX = window.innerWidth - btnWidth - 20;
-      const maxY = window.innerHeight - btnHeight - 20;
-
-      let newX = Math.random() * maxX;
-      let newY = Math.random() * maxY;
-
+      // Używamy marginesu 20px na obu stronach
+      const margin = 20;
+      // Używamy pełnych wymiarów viewportu
+      const maxX = window.innerWidth - btnWidth - 2 * margin;
+      const maxY = window.innerHeight - btnHeight - 2 * margin;
+      let newX = margin + Math.random() * maxX;
+      let newY = margin + Math.random() * maxY;
       noBtn.style.position = "fixed";
       noBtn.style.left = `${newX}px`;
       noBtn.style.top = `${newY}px`;
-
       noHoverCount++;
     }
 
