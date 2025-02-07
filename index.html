@@ -30,7 +30,7 @@
       padding: 30px;
       text-align: center;
       border-radius: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
       max-width: 90%;
       width: 400px;
       position: relative;
@@ -98,9 +98,9 @@
       background-color: #ff4757;
     }
 
-    /* Guzik "Nie" – domyślnie pozycjonowany; ruch będzie ustalany przez JS */
+    /* Guzik "Nie" – ruch ustawiany przez JS */
     #noBtn {
-      transition: all 0.2s ease;
+      transition: transform 0.2s ease;
     }
 
     .response {
@@ -139,7 +139,7 @@
     <p id="response" class="response"></p>
   </div>
 
-  <!-- Szopy w rogach -->
+  <!-- Szopy w lewym i prawym dolnym rogu -->
   <img src="lewo.png" class="raccoon left">
   <img src="prawo.png" class="raccoon right">
 
@@ -149,28 +149,31 @@
     const maxNoHovers = 30;
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
+    
+    // Flaga, która blokuje kolejne akcje w tej sesji
+    let sessionCompleted = false;
 
     function moveNoButton() {
+      if (sessionCompleted) return; // Jeśli już kliknięto, nie ruszaj guzika
       if (noHoverCount < maxNoHovers) {
         let newX, newY;
         if (window.innerWidth <= 600) {
-          // Na telefonie: ograniczamy ruch do widocznego obszaru viewportu
+          // Na telefonie – ograniczamy ruch do widocznego obszaru viewportu
           const maxX = window.innerWidth - noBtn.clientWidth - 20;
           const maxY = window.innerHeight - noBtn.clientHeight - 20;
           newX = Math.random() * maxX;
           newY = Math.random() * maxY;
-          noBtn.style.position = "fixed";  // fixed względem widoku
+          noBtn.style.position = "fixed";
           noBtn.style.left = `${newX}px`;
           noBtn.style.top = `${newY}px`;
         } else {
-          // Na komputerze: ograniczamy ruch do obszaru karty
-          const container = document.querySelector(".card");
-          const containerRect = container.getBoundingClientRect();
-          const maxX = containerRect.width - noBtn.clientWidth - 20;
-          const maxY = containerRect.height - noBtn.clientHeight - 20;
+          // Na komputerze – ruch w obrębie karty
+          const container = document.querySelector(".card").getBoundingClientRect();
+          const maxX = container.width - noBtn.clientWidth - 20;
+          const maxY = container.height - noBtn.clientHeight - 20;
           newX = Math.random() * maxX;
           newY = Math.random() * maxY;
-          noBtn.style.position = "absolute";  // względem karty
+          noBtn.style.position = "absolute";
           noBtn.style.left = `${newX}px`;
           noBtn.style.top = `${newY}px`;
         }
@@ -179,31 +182,18 @@
     }
 
     noBtn.addEventListener("mouseover", moveNoButton);
-    noBtn.addEventListener("click", moveNoButton);
-
-    yesBtn.addEventListener("click", function() {
-      const username = document.getElementById("username").value.trim();
-      if (!username) {
-        alert("Proszę podać swoje imię!");
-        return;
-      }
-      document.getElementById("response").style.display = "block";
-      document.getElementById("response").textContent = `To najpiękniejszy dzień w moim życiu, ${username}! ❤️`;
-      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-      fetch(DISCORD_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          content: `💖 ${username} kliknęła "Tak!" i zgodziła się zostać twoją walentynką! 💖`
-        })
-      });
-    });
-
     noBtn.addEventListener("click", function() {
-      if (noHoverCount >= maxNoHovers) {
+      if (!sessionCompleted) {
+        // Jeżeli jeszcze nie kliknięto żadnego guzika, najpierw spróbuj ruszyć
+        moveNoButton();
+      }
+      // Jeśli już osiągnięto limit, przycisk "Nie" powinien działać
+      if (noHoverCount >= maxNoHovers && !sessionCompleted) {
+        sessionCompleted = true;
         const username = document.getElementById("username").value.trim();
         if (!username) {
           alert("Proszę podać swoje imię!");
+          sessionCompleted = false;
           return;
         }
         document.getElementById("response").style.display = "block";
@@ -216,6 +206,27 @@
           })
         });
       }
+    });
+
+    yesBtn.addEventListener("click", function() {
+      if (sessionCompleted) return;
+      sessionCompleted = true;
+      const username = document.getElementById("username").value.trim();
+      if (!username) {
+        alert("Proszę podać swoje imię!");
+        sessionCompleted = false;
+        return;
+      }
+      document.getElementById("response").style.display = "block";
+      document.getElementById("response").textContent = `To najpiękniejszy dzień w moim życiu, ${username}! ❤️`;
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      fetch(DISCORD_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content: `💖 ${username} kliknęła "Tak!" i zgodziła się zostać twoją walentynką! 💖`
+        })
+      });
     });
   </script>
 </body>
