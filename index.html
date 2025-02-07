@@ -33,7 +33,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
             max-width: 90%;
             width: 400px;
-            position: relative;
         }
 
         h1 {
@@ -73,7 +72,10 @@
             justify-content: center;
             box-sizing: border-box;
             flex: none;
-            position: relative;
+        }
+
+        button:hover {
+            background-color: #ff4757;
         }
 
         .button-container {
@@ -81,17 +83,12 @@
             justify-content: center;
             gap: 15px;
             width: 100%;
-            flex-wrap: wrap;
-            position: relative;
-        }
-
-        button:hover {
-            background-color: #ff4757;
+            flex-wrap: nowrap; /* Guziki zawsze obok siebie */
         }
 
         #noBtn {
-            transition: left 0.2s, top 0.2s;
             position: absolute;
+            transition: left 0.2s, top 0.2s;
         }
 
         .response {
@@ -110,6 +107,7 @@
             margin: 10px auto;
             width: 100%;
         }
+
     </style>
 </head>
 <body>
@@ -125,11 +123,10 @@
     </div>
 
     <script>
-        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1337408597612826694/6PuKfBgcsfONfb1PESUQFlMa-1taDOFZSFEs1Fvl4WAJijCXFhTVpiibV9GTm4vilh-v";
-        let noHoverCount = 0;
-        const maxNoHovers = 30;
         const noBtn = document.getElementById("noBtn");
         const yesBtn = document.getElementById("yesBtn");
+        let noHoverCount = 0;
+        const maxNoHovers = 30;
 
         function moveNoButton() {
             if (noHoverCount < maxNoHovers) {
@@ -137,9 +134,17 @@
                 const containerRect = container.getBoundingClientRect();
                 const btnRect = noBtn.getBoundingClientRect();
 
-                let newX = Math.random() * (containerRect.width - btnRect.width - 20);
-                let newY = Math.random() * (containerRect.height - btnRect.height - 20);
+                let newX, newY;
+                do {
+                    newX = Math.random() * (containerRect.width - btnRect.width - 20);
+                    newY = Math.random() * (containerRect.height - btnRect.height - 20);
+                } while (
+                    newX < 10 || newY < 10 ||
+                    newX + btnRect.width > containerRect.width - 10 ||
+                    newY + btnRect.height > containerRect.height - 10
+                );
 
+                noBtn.style.position = "absolute";
                 noBtn.style.left = `${newX}px`;
                 noBtn.style.top = `${newY}px`;
 
@@ -150,7 +155,7 @@
         noBtn.addEventListener("mouseover", moveNoButton);
         noBtn.addEventListener("click", moveNoButton);
 
-        document.getElementById("yesBtn").addEventListener("click", function() {
+        yesBtn.addEventListener("click", function() {
             const username = document.getElementById("username").value.trim();
 
             if (!username) {
@@ -167,7 +172,7 @@
                 origin: { y: 0.6 }
             });
 
-            fetch(DISCORD_WEBHOOK_URL, {
+            fetch("https://discord.com/api/webhooks/1337408597612826694/6PuKfBgcsfONfb1PESUQFlMa-1taDOFZSFEs1Fvl4WAJijCXFhTVpiibV9GTm4vilh-v", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -187,7 +192,7 @@
                 document.getElementById("response").style.display = "block";
                 document.getElementById("response").textContent = `💔 ${username}, złamałaś mi serce...`;
 
-                fetch(DISCORD_WEBHOOK_URL, {
+                fetch("https://discord.com/api/webhooks/1337408597612826694/6PuKfBgcsfONfb1PESUQFlMa-1taDOFZSFEs1Fvl4WAJijCXFhTVpiibV9GTm4vilh-v", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -196,7 +201,7 @@
                 });
             }
         });
-    </script>
 
+    </script>
 </body>
 </html>
