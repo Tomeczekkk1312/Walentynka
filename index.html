@@ -175,7 +175,6 @@ h8 {
   <!-- Szopy w rogach -->
   <img src="lewo.png" class="raccoon left">
   <img src="prawo.png" class="raccoon right">
-<h8 class="raccoon left">Nie chce mi się żyć</h8>
   <script>
     // Animowane tło z serduszkami
     function createHeart() {
@@ -252,7 +251,7 @@ h8 {
         return;
       }
       document.getElementById("response").style.display = "block";
-      document.getElementById("response").textContent = `To najpiękniejszy dzień w moim życiu, ${username}! ❤️`;
+      document.getElementById("response").textContent = `To kiedy jakaś randeczka??, ${username}! ❤️`;
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       fetch(DISCORD_WEBHOOK_URL, {
         method: "POST",
@@ -265,3 +264,4 @@ h8 {
   </script>
 </body>
 </html>
+
