@@ -89,6 +89,7 @@
       margin-top: 15px;
       display: none;
       font-size: 1.2rem;
+      white-space: pre-line;
     }
 
     .raccoon {
@@ -115,7 +116,6 @@
 
   <input type="date" id="datePicker" style="display:none;">
   <input type="time" id="timePicker" style="display:none;">
-  <input type="text" id="placePicker" placeholder="Miejsce randki ❤️" style="display:none;">
 
   <div class="button-container">
     <button id="yesBtn">Tak!</button>
@@ -136,7 +136,6 @@
   const nameInput = document.getElementById("username");
   const datePicker = document.getElementById("datePicker");
   const timePicker = document.getElementById("timePicker");
-  const placePicker = document.getElementById("placePicker");
   const response = document.getElementById("response");
 
   let sessionCompleted = false;
@@ -165,34 +164,32 @@
     if (!name) return alert("Podaj imię!");
 
     response.style.display = "block";
-    response.textContent = `Super 😍 ${name}, wybierz szczegóły randki ❤️`;
+    response.textContent = `Super 😍 ${name}, wybierz datę i godzinę ❤️`;
 
     datePicker.style.display = "block";
     timePicker.style.display = "block";
-    placePicker.style.display = "block";
 
     confetti({ particleCount: 120, spread: 80 });
   });
 
-  placePicker.addEventListener("change", () => {
+  timePicker.addEventListener("change", () => {
     if (sessionCompleted) return;
+
+    if (!datePicker.value || !timePicker.value) return;
+
+    sessionCompleted = true;
 
     const name = nameInput.value.trim();
     const date = new Date(datePicker.value).toLocaleDateString("pl-PL");
     const time = timePicker.value;
-    const place = placePicker.value;
 
-    if (!datePicker.value || !time || !place) return;
-
-    sessionCompleted = true;
-
-    response.textContent = `💖 Randka potwierdzona!\n📅 ${date} ⏰ ${time}\n📍 ${place}`;
+    response.textContent = `💖 Randka potwierdzona!\n📅 ${date}\n⏰ ${time}`;
 
     fetch(DISCORD_WEBHOOK_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        content: `💖 WALENTYNKA POTWIERDZONA 💖\n👤 ${name}\n📅 ${date}\n⏰ ${time}\n📍 ${place}`
+        content: `💖 WALENTYNKA POTWIERDZONA 💖\n👤 ${name}\n📅 ${date}\n⏰ ${time}`
       })
     });
   });
