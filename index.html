@@ -63,6 +63,12 @@
       text-align: center;
     }
 
+    label {
+      display: block;
+      margin-top: 10px;
+      font-size: 0.95rem;
+    }
+
     .button-container {
       display: flex;
       gap: 15px;
@@ -114,7 +120,10 @@
 
   <input type="text" id="username" placeholder="Twoje imię">
 
+  <label for="datePicker" id="dateLabel" style="display:none;">📅 Wybierz datę</label>
   <input type="date" id="datePicker" style="display:none;">
+
+  <label for="timePicker" id="timeLabel" style="display:none;">⏰ Wybierz godzinę</label>
   <input type="time" id="timePicker" style="display:none;">
 
   <div class="button-container">
@@ -136,6 +145,8 @@
   const nameInput = document.getElementById("username");
   const datePicker = document.getElementById("datePicker");
   const timePicker = document.getElementById("timePicker");
+  const dateLabel = document.getElementById("dateLabel");
+  const timeLabel = document.getElementById("timeLabel");
   const response = document.getElementById("response");
 
   let sessionCompleted = false;
@@ -166,7 +177,9 @@
     response.style.display = "block";
     response.textContent = `Super 😍 ${name}, wybierz datę i godzinę naszej randki ❤️`;
 
+    dateLabel.style.display = "block";
     datePicker.style.display = "block";
+    timeLabel.style.display = "block";
     timePicker.style.display = "block";
 
     confetti({ particleCount: 120, spread: 80 });
@@ -174,7 +187,6 @@
 
   timePicker.addEventListener("change", () => {
     if (sessionCompleted) return;
-
     if (!datePicker.value || !timePicker.value) return;
 
     sessionCompleted = true;
@@ -197,4 +209,3 @@
 
 </body>
 </html>
-
